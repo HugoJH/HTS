@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 #from collections import defaultdict
-#from subprocess import check_output
+from subprocess import check_output
 #import os.path as path
 import multiprocessing
 #import os
