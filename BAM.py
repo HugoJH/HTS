@@ -1,16 +1,4 @@
 #!/usr/bin/env python
-#from collections import defaultdict
-#from subprocess import check_output
-#import os.path as path
-#import multiprocessing
-#import os
-#import sys
-#import datetime
-#import hashlib
-#import inspect
-#from inspect import signature
-#import inspect
-#from pathlib import Path
 from utils import exists, md5
 from GATK import *
 from bwa import bwaMem

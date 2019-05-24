@@ -81,15 +81,14 @@ def mergeBamAlignment(input_unmapped_bam, input_aligned_bam, output, reference, 
 
 
 @exists
-def markDuplicates(input_bams, output, metrics_file, tmp_dir):
+def markDuplicates(input_bam, output, metrics_file, tmp_dir):
     args = defaultdict(list)
     args["METRICS_FILE"] = metrics_file
     args["O"] = output
     args["CREATE_INDEX"] = "true"
     args["OPTICAL_DUPLICATE_PIXEL_DISTANCE"] = "100"
     args["TMP_DIR"] = tmp_dir
-    for bam in input_bams:
-        args["INPUT"].append(str(bam))
+    args["INPUT"] = input_bam
     check_output(["gatk MarkDuplicates" + build_args_from_dict(args)], shell=True)
 
 @exists
@@ -143,10 +142,9 @@ def mutect(tumor_bam, normal_bam, output, germline_resource, reference, interval
     args["I"].append(normal_bam)
     args["I"].append(tumor_bam)
     args["O"] = output
-    #args["tumor"] = getSampleName (tumor_bam, "/tmp/tumor.name");
     args["normal"] = getSampleName (normal_bam, "/tmp/normal.name")
     args["-f1r2-tar-gz"] = output + ".f1r2.tar.gz"
-    args["bamout"] = output.bamout.bam
+    args["bamout"] = f"{output}.bamout.bam"
     args["-germline-resource"] = germline_resource
     if pon:
         args["pon"] = pon
@@ -191,11 +189,12 @@ def CalculateContamination(tumor_pileupsummaries, normal_pileupsummaries, output
     return output
 
 @exists
-def FilterMutectCalls(input_variants, output, reference, contamination_table, segments):
+def FilterMutectCalls(input_variants, output, reference, contamination_table, segments,ob_priors):
     args = defaultdict(list)
     args["V"] = input_variants
     args["O"] = output
     args["R"] = reference
+    args["-orientation-bias-artifact-priors"] = ob_priors
     args["-contamination-table"] = contamination_table
     args["-tumor-segmentation"] = segments
     check_output(["gatk FilterMutectCalls" + build_args_from_dict(args)], shell=True)
