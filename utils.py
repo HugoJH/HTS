@@ -29,12 +29,20 @@ def function_args_dict(function,arguments):
 #    if ref == "b37":
 #        return "/data/resources/genome_references/b37/b37.fa.gz"
 
-def md5(fname):
-    hash_md5 = hashlib.md5()
-    with open(fname, "rb") as f:
-        for chunk in iter(lambda: f.read(4096), b""):
-            hash_md5.update(chunk)
-    return hash_md5.hexdigest()
+def md5(filename):
+    digest = ""
+    if not Path(filename + ".md5").exists():
+        hash_md5 = hashlib.md5()
+        with open(filename, "rb") as f:
+            for chunk in iter(lambda: f.read(4096), b""):
+                hash_md5.update(chunk)
+        digest = hash_md5.hexdigest()
+        with open (filename + ".md5","w") as f:
+            f.write(digest)
+    else:
+        with open(filename + ".md5", "r") as f:
+           digest = f.read()
+    return digest
 
 def exists(fname):
     def wrapper(*args,**kwargs):
