@@ -118,12 +118,16 @@ def applyBQSR(input_bam, output, recalibration_table, reference):
     return output
 
 def validateSamFile(input_bam, output, reference):
-    args = defaultdict(list)
-    args["R"] = reference
-    args["I"] = input_bam 
-    args["O"] = output
-    args["MODE"] = "SUMMARY"
-    check_output(["gatk ValidateSamFile" + build_args_from_dict(args)], shell=True)
+    if not Path(output):
+        args = defaultdict(list)
+        args["R"] = reference
+        args["I"] = input_bam
+        args["O"] = output
+        args["MODE"] = "SUMMARY"
+        check_output(["gatk ValidateSamFile" + build_args_from_dict(args)], shell=True)
+    else:
+        with open(output,"r") as f:
+            print("Validation results",f.read())
 
 def getSampleName(input_bam, output):
     args = defaultdict(list)
